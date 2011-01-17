@@ -10,16 +10,19 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		9D4970FA12E3B0420002C4D2 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D4970F912E3B0420002C4D2 /* libsubstrate.dylib */; };
 		9D49711E12E3B4DD0002C4D2 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D49711D12E3B4DD0002C4D2 /* CoreFoundation.framework */; };
+		9D62E4CE12E488B500C7C0E2 /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 9D62E4CD12E488B500C7C0E2 /* build.sh */; };
+		9D8A202A12E489BA000F2BA0 /* control in Resources */ = {isa = PBXBuildFile; fileRef = 9D8A202912E489BA000F2BA0 /* control */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1D6058910D05DD3D006BFB54 /* ultra43.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ultra43.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		28A0AAE50D9B0CCF005BE974 /* ultra43_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ultra43_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* ultra43-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ultra43-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		9D4970F812E3B0370002C4D2 /* substrate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = substrate.h; sourceTree = SOURCE_ROOT; };
 		9D4970F912E3B0420002C4D2 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libsubstrate.dylib; sourceTree = SOURCE_ROOT; };
 		9D49711D12E3B4DD0002C4D2 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		9D62E4CD12E488B500C7C0E2 /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
+		9D8A202912E489BA000F2BA0 /* control */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = control; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +61,6 @@
 			isa = PBXGroup;
 			children = (
 				9D4970F812E3B0370002C4D2 /* substrate.h */,
-				28A0AAE50D9B0CCF005BE974 /* ultra43_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -67,6 +69,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9D8A202912E489BA000F2BA0 /* control */,
+				9D62E4CD12E488B500C7C0E2 /* build.sh */,
 				8D1107310486CEB800E47090 /* ultra43-Info.plist */,
 			);
 			name = Resources;
@@ -91,6 +95,7 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				9DE1B27412E479B600DAF74A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -131,10 +136,32 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D62E4CE12E488B500C7C0E2 /* build.sh in Resources */,
+				9D8A202A12E489BA000F2BA0 /* control in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9DE1B27412E479B600DAF74A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(CODESIGNING_FOLDER_PATH)/$(TARGET_NAME)",
+				"${PROJECT_DIR}/control",
+			);
+			outputPaths = (
+				"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/psigned_${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}",
+				"${PROJECT_DIR}/build/CurrentFlavor/control",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "out_path=${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/psigned_${EXECUTABLE_FOLDER_PATH}\nmkdir -p ${out_path}\ncp ${CODESIGNING_FOLDER_PATH}/${TARGET_NAME} ${out_path}/\n/usr/local/bin/ldid -S ${out_path}/${EXECUTABLE_NAME}\n\ngcc -C -E -P -x c -DCURRENT_DEB_VERSION=$CURRENT_PROJECT_VERSION-0 \"${PROJECT_DIR}/control\" -o \"${PROJECT_DIR}/build/CurrentFlavor/control\"\nsed -i '' '/^$/d' \"${PROJECT_DIR}/build/CurrentFlavor/control\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
@@ -153,6 +180,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1.0.0;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -162,6 +190,7 @@
 					"\"$(SRCROOT)\"",
 				);
 				PRODUCT_NAME = ultra43;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -170,6 +199,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1.0.0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "ultra43-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -178,6 +208,7 @@
 				);
 				PRODUCT_NAME = ultra43;
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};

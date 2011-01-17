@@ -3,4 +3,6 @@ build
 *.perspectivev3
 xcuserdata
 project.xcworkspace
+.DS_Store
+.svn
 

@@ -1,0 +1,6 @@
+build
+*.pbxuser
+*.perspectivev3
+xcuserdata
+project.xcworkspace
+

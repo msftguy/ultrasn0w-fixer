@@ -21,12 +21,22 @@ static const char* xgold_libname = "/var/stash/share/ultrasn0w/ultrasn0w-xgold60
 typedef struct {size_t symOff; size_t refOff;} REF_ENTRY;
 
 REF_ENTRY ref_table[] = {
+	//ARMv7 Beta1
 	//"+xsimstate=1"
 	{0xEBA7C, 0x33850}, 
 	//"Sending internal notification %s (%d) params={%d, %d, %p}"
 	{0xF2B1C, 0x5F5D0}, 
 	//"activation ticket accepted... drive thru"
-	{0x0EB9E4, 0x03341C}
+	{0xEB9E4, 0x3341C},
+	
+	//ARMv7 Beta2
+	//"+xsimstate=1"
+	{0xEC844, 0x033308},
+	//"Sending internal notification %s (%d) params={%d, %d, %p}"
+	{0xF38F4, 0x05F1E0}, 
+	//"activation ticket accepted... drive thru"
+	{0xEC7AC, 0x32ED4},
+	
 };
 
 static char* my_FindReference(char* addr)
@@ -53,6 +63,7 @@ void hook_ultrasn0w()
 	static bool hooked = false;
 	if (hooked)
 		return;
+	// FIXME: something needs to be changed on iPhone4
 	void* ultrasn0w608_lib = dlopen(xgold_libname, RTLD_LAZY);
 	if (!ultrasn0w608_lib) {
 		fprintf(stderr, "ultrasn0w_on_4.3_fixer: dlopen(%s) FAILED\n", xgold_libname);

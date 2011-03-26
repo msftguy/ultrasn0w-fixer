@@ -16,12 +16,13 @@ static char* (*s_orig_getsectdatafromheader) (
 							   const char* sectname,
 							   uint32_t* size);
 
-static const char* xgold_libname = "/var/stash/share/ultrasn0w/ultrasn0w-xgold608.dylib";
+static const char* xgold_libname = "/usr/share/ultrasn0w/ultrasn0w-xgold608.dylib";
 
 typedef struct {size_t symOff; size_t refOff;} REF_ENTRY;
 
 REF_ENTRY ref_table[] = {
-	//"+xsimstate=1"
+	// 4.3.1 3GS
+        //"+xsimstate=1"
 	{0xED758, 0x034548},
 	//"Sending internal notification %s (%d) params={%d, %d, %p}"
 	{0xF47AC, 0x06039C},

@@ -23,7 +23,7 @@ static const char* xgold_libname = "/usr/share/ultrasn0w/ultrasn0w-xgold608.dyli
 typedef struct {size_t symOff; size_t refOff;} REF_ENTRY;
 
 REF_ENTRY ref_table[] = {
-	// 4.3.1 3GS
+	// 4.3.1 3GS/4
         //"+xsimstate=1"
 	{0xED758, 0x034548},
 	//"Sending internal notification %s (%d) params={%d, %d, %p}"
@@ -48,10 +48,10 @@ static char* my_FindReference(char* addr)
 		}
 	}
 	if (refOff == 0) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: my_FindReference failed for %x\n", symOff);
+		fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: my_FindReference failed for %x\n", symOff);
 		return NULL;
 	}
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer: my_FindReference OK for %x: %x + %x\n", symOff, slide, refOff);
+	fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: my_FindReference OK for %x: %x + %x\n", symOff, slide, refOff);
 	return slide + refOff;
 }
 
@@ -63,15 +63,15 @@ void hook_ultrasn0w()
 	// FIXME: something needs to be changed on iPhone4
 	void* ultrasn0w608_lib = dlopen(xgold_libname, RTLD_LAZY);
 	if (!ultrasn0w608_lib) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: dlopen(%s) FAILED\n", xgold_libname);
+		fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: dlopen(%s) FAILED\n", xgold_libname);
 		return;
 	}
 	void* pfnFindReference = dlsym(ultrasn0w608_lib, "FindReference");
 	if (!pfnFindReference) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: dlsym('FindReference') FAILED\n");
+		fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: dlsym('FindReference') FAILED\n");
 		return;
 	}
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer: hooked FindReference\n");
+	fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: hooked FindReference\n");
 	MSHookFunction(pfnFindReference, my_FindReference, &s_orig_getsectdatafromheader);
 	hooked = true;	
 }
@@ -93,6 +93,6 @@ char* my_getsectdatafromheader(
 void entry()  __attribute__ ((constructor));
 
 void entry() {
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer loaded\n");
+	fprintf(stderr, "ultrasn0w_on_4.3.1_fixer loaded\n");
 	MSHookFunction(getsectdatafromheader, my_getsectdatafromheader, &s_orig_getsectdatafromheader);
 }

@@ -15,8 +15,10 @@ static char* (*s_orig_getsectdatafromheader) (
 							   const char* segname,
 							   const char* sectname,
 							   uint32_t* size);
-
+// 3GS
 static const char* xgold_libname = "/usr/share/ultrasn0w/ultrasn0w-xgold608.dylib";
+// iPhone 4
+//static const char* xgold_libname = "/Library/MobileSubstrate/DynamicLibraries/ultrasn0w.dylib";
 
 typedef struct {size_t symOff; size_t refOff;} REF_ENTRY;
 

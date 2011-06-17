@@ -1,1 +1,7 @@
-Filter = {Executables = ("CommCenter");};
+{
+	Filter = {
+		Executables = (
+			CommCenterClassic,
+		);
+	};
+}

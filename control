@@ -2,10 +2,10 @@ Package: com.msftguy.ultrasn0w-fix
 Version: CURRENT_DEB_VERSION
 Architecture: iphoneos-arm
 Section: Utilities
-Depends: ultrasn0w(<=1.2)
+Depends: ultrasn0w(<=1.2.3)
 Installed-Size: 4096
-Name: ultrasn0w fixer for 4.3b2
-Description: Works around ultrasn0w issues on 4.3b2 FW
+Name: ultrasn0w fixer for 5.0 b1 
+Description: Works around ultrasn0w issues on 5.0 b1 FW
 Author: msft.guy <msft.guy@gmail.com>
 Maintainer: msft.guy <msft.guy@gmail.com>
 Homepage: http://msftguy.blogspot.com/

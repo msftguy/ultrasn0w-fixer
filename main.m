@@ -10,38 +10,47 @@
 #include <mach-o/getsect.h>
 #include <stdio.h>
 
-static char* (*s_orig_getsectdatafromheader) (
-							   const struct mach_header* mhp,
-							   const char* segname,
-							   const char* sectname,
-							   uint32_t* size);
+static FILE * (*s_orig_fopen) ( const char * filename, const char * mode );
 
-static const char* xgold_libname = "/var/stash/share/ultrasn0w/ultrasn0w-xgold608.dylib";
+static const char* xgold_libname = "/usr/share/ultrasn0w/ultrasn0w-xgold608.dylib";
 
-typedef struct {size_t symOff; size_t refOff;} REF_ENTRY;
+static void* s_orig_findReference;
+static size_t (*s_orig_FindLastThumbFunction)(size_t, int);
+
+#define LOGPREFIX "ultrasn0w_fixer: "
+
+typedef struct {size_t symOff; size_t refOff; size_t thumbFn_start;} REF_ENTRY;
 
 REF_ENTRY ref_table[] = {
-	//ARMv7 Beta1
-	//"+xsimstate=1"
-	{0xEBA7C, 0x33850}, 
+//	//ARMv7 Beta1
+//	//"+xsimstate=1"
+//	{0xEBA7C, 0x33850}, 
+//	//"Sending internal notification %s (%d) params={%d, %d, %p}"
+//	{0xF2B1C, 0x5F5D0}, 
+//	//"activation ticket accepted... drive thru"
+//	{0xEB9E4, 0x3341C},
+//	
+//	//ARMv7 Beta2
+//	//"+xsimstate=1"
+//	{0xEC844, 0x033308},
+//	//"Sending internal notification %s (%d) params={%d, %d, %p}"
+//	{0xF38F4, 0x05F1E0}, 
+//	//"activation ticket accepted... drive thru"
+//	{0xEC7AC, 0x32ED4},
+    
+    //iOS5 Beta1
+    //"+xsimstate=1"
+	{0x10737A, 0x302A8},
 	//"Sending internal notification %s (%d) params={%d, %d, %p}"
-	{0xF2B1C, 0x5F5D0}, 
+	{0x10F782, 0x5FB30, 0x5FA85}, 
 	//"activation ticket accepted... drive thru"
-	{0xEB9E4, 0x3341C},
-	
-	//ARMv7 Beta2
-	//"+xsimstate=1"
-	{0xEC844, 0x033308},
-	//"Sending internal notification %s (%d) params={%d, %d, %p}"
-	{0xF38F4, 0x05F1E0}, 
-	//"activation ticket accepted... drive thru"
-	{0xEC7AC, 0x32ED4},
+	{0x107396, 0x2F54C},
 	
 };
 
-static char* my_FindReference(char* addr)
+static size_t my_FindReference(size_t addr)
 {
-	char* slide = _dyld_get_image_vmaddr_slide(0);
+	int slide = _dyld_get_image_vmaddr_slide(0);
 	size_t symOff = addr - slide;
 	size_t refOff = 0;
 	for (int i = 0; i < sizeof(ref_table) / sizeof(REF_ENTRY); ++i) {
@@ -51,11 +60,34 @@ static char* my_FindReference(char* addr)
 		}
 	}
 	if (refOff == 0) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: my_FindReference failed for %x\n", symOff);
+		fprintf(stderr, LOGPREFIX "my_FindReference failed for 0x%lx\n", symOff);
 		return NULL;
 	}
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer: my_FindReference OK for %x: %x + %x\n", symOff, slide, refOff);
+	fprintf(stderr, LOGPREFIX "my_FindReference OK for 0x%lx: 0x%x + 0x%lx\n", symOff, slide, refOff);
 	return slide + refOff;
+}
+
+static size_t my_FindLastThumbFunction(size_t start, int maxlen)
+{
+    size_t result = 0;
+    int slide = _dyld_get_image_vmaddr_slide(0);
+    size_t refOff = start - slide;
+    size_t fnStart = 0;
+    // FindLastThumbFunction doesn't want to detect 0xF0 0xB5 as a prolog ?
+	for (int i = 0; i < sizeof(ref_table) / sizeof(REF_ENTRY); ++i) {
+		if (ref_table[i].refOff == refOff) {
+			fnStart = ref_table[i].thumbFn_start;
+			break;
+		}
+	}
+
+    if (fnStart != 0)
+        result = slide + fnStart;
+    else
+        result = s_orig_FindLastThumbFunction(start, maxlen);
+    fprintf(stderr, LOGPREFIX "FindLastThumbFunction(0x%lx, 0x%x) = 0x%lx [+0x%x]%s", 
+            start - slide, maxlen, result - slide, slide, fnStart ? " **fixed**":"");
+    return result;
 }
 
 void hook_ultrasn0w()
@@ -66,36 +98,41 @@ void hook_ultrasn0w()
 	// FIXME: something needs to be changed on iPhone4
 	void* ultrasn0w608_lib = dlopen(xgold_libname, RTLD_LAZY);
 	if (!ultrasn0w608_lib) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: dlopen(%s) FAILED\n", xgold_libname);
+		fprintf(stderr, LOGPREFIX "dlopen(%s) FAILED\n", xgold_libname);
 		return;
 	}
 	void* pfnFindReference = dlsym(ultrasn0w608_lib, "FindReference");
 	if (!pfnFindReference) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: dlsym('FindReference') FAILED\n");
+		fprintf(stderr, LOGPREFIX "dlsym('FindReference') FAILED\n");
 		return;
 	}
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer: hooked FindReference\n");
-	MSHookFunction(pfnFindReference, my_FindReference, &s_orig_getsectdatafromheader);
+	MSHookFunction(pfnFindReference, my_FindReference, &s_orig_findReference);
+	fprintf(stderr, LOGPREFIX "hooked FindReference\n");
+    
+	void* pfnFindLastThumbFunction = dlsym(ultrasn0w608_lib, "FindLastThumbFunction");
+	if (!pfnFindLastThumbFunction) {
+		fprintf(stderr, LOGPREFIX "dlsym('FindLastThumbFunction') FAILED\n");
+		return;
+	}
+	MSHookFunction(pfnFindLastThumbFunction, my_FindLastThumbFunction, &s_orig_FindLastThumbFunction);
+	fprintf(stderr, LOGPREFIX "hooked FindLastThumbFunction\n");
+    
 	hooked = true;	
 }
 
-char* my_getsectdatafromheader(
-							const struct mach_header* mhp,
-							const char* segname,
-							const char* sectname,
-							uint32_t* size)
+FILE * my_fopen ( const char * filename, const char * mode )
 {
-	if (mhp == (const struct mach_header*)0x1000) {
-		hook_ultrasn0w();
-		return _dyld_get_image_vmaddr_slide(0) + getsectdata(segname, sectname, size);
-	} else {
-		return s_orig_getsectdatafromheader(mhp, segname, sectname, size);
-	}
+	if ((filename != NULL) && 
+        (0 == strcmp(filename, "/var/wireless/Library/Logs/ultrasn0w-dylib.log"))) 
+    {
+        hook_ultrasn0w();
+    }
+	return s_orig_fopen(filename, mode);
 }
 
 void entry()  __attribute__ ((constructor));
 
 void entry() {
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer loaded\n");
-	MSHookFunction(getsectdatafromheader, my_getsectdatafromheader, &s_orig_getsectdatafromheader);
+	fprintf(stderr, LOGPREFIX "loaded\n");
+	MSHookFunction(fopen, my_fopen, &s_orig_fopen);
 }

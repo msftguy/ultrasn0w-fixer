@@ -15,27 +15,24 @@ static char* (*s_orig_getsectdatafromheader) (
 							   const char* segname,
 							   const char* sectname,
 							   uint32_t* size);
-
-static const char* xgold_libname = "/var/stash/share/ultrasn0w/ultrasn0w-xgold608.dylib";
+// 3GS
+static const char* xgold_libname = "/usr/share/ultrasn0w/ultrasn0w-xgold608.dylib";
+// iPhone 4
+//static const char* xgold_libname = "/Library/MobileSubstrate/DynamicLibraries/ultrasn0w.dylib";
 
 typedef struct {size_t symOff; size_t refOff;} REF_ENTRY;
 
 REF_ENTRY ref_table[] = {
-	//ARMv7 Beta1
-	//"+xsimstate=1"
-	{0xEBA7C, 0x33850}, 
+	// 4.3.1 3GS/4
+        //"+xsimstate=1"
+	{0xED758, 0x034548},
 	//"Sending internal notification %s (%d) params={%d, %d, %p}"
-	{0xF2B1C, 0x5F5D0}, 
+	{0xF47AC, 0x06039C},
 	//"activation ticket accepted... drive thru"
-	{0xEB9E4, 0x3341C},
+	{0xED6C0, 0x34114},
 	
-	//ARMv7 Beta2
-	//"+xsimstate=1"
-	{0xEC844, 0x033308},
-	//"Sending internal notification %s (%d) params={%d, %d, %p}"
-	{0xF38F4, 0x05F1E0}, 
-	//"activation ticket accepted... drive thru"
-	{0xEC7AC, 0x32ED4},
+	
+	
 	
 };
 
@@ -51,10 +48,10 @@ static char* my_FindReference(char* addr)
 		}
 	}
 	if (refOff == 0) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: my_FindReference failed for %x\n", symOff);
+		fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: my_FindReference failed for %x\n", symOff);
 		return NULL;
 	}
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer: my_FindReference OK for %x: %x + %x\n", symOff, slide, refOff);
+	fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: my_FindReference OK for %x: %x + %x\n", symOff, slide, refOff);
 	return slide + refOff;
 }
 
@@ -66,15 +63,15 @@ void hook_ultrasn0w()
 	// FIXME: something needs to be changed on iPhone4
 	void* ultrasn0w608_lib = dlopen(xgold_libname, RTLD_LAZY);
 	if (!ultrasn0w608_lib) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: dlopen(%s) FAILED\n", xgold_libname);
+		fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: dlopen(%s) FAILED\n", xgold_libname);
 		return;
 	}
 	void* pfnFindReference = dlsym(ultrasn0w608_lib, "FindReference");
 	if (!pfnFindReference) {
-		fprintf(stderr, "ultrasn0w_on_4.3_fixer: dlsym('FindReference') FAILED\n");
+		fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: dlsym('FindReference') FAILED\n");
 		return;
 	}
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer: hooked FindReference\n");
+	fprintf(stderr, "ultrasn0w_on_4.3.1_fixer: hooked FindReference\n");
 	MSHookFunction(pfnFindReference, my_FindReference, &s_orig_getsectdatafromheader);
 	hooked = true;	
 }
@@ -96,6 +93,6 @@ char* my_getsectdatafromheader(
 void entry()  __attribute__ ((constructor));
 
 void entry() {
-	fprintf(stderr, "ultrasn0w_on_4.3_fixer loaded\n");
+	fprintf(stderr, "ultrasn0w_on_4.3.1_fixer loaded\n");
 	MSHookFunction(getsectdatafromheader, my_getsectdatafromheader, &s_orig_getsectdatafromheader);
 }

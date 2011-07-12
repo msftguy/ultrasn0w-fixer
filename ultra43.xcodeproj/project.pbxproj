@@ -111,6 +111,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ultra43" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -159,7 +162,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "out_path=${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/psigned_${EXECUTABLE_FOLDER_PATH}\nmkdir -p ${out_path}\ncp ${CODESIGNING_FOLDER_PATH}/${TARGET_NAME} ${out_path}/\n/usr/local/bin/ldid -S ${out_path}/${EXECUTABLE_NAME}\n\ngcc -C -E -P -x c -DCURRENT_DEB_VERSION=$CURRENT_PROJECT_VERSION-0 \"${PROJECT_DIR}/control\" -o \"${PROJECT_DIR}/build/CurrentFlavor/control\"\nsed -i '' '/^$/d' \"${PROJECT_DIR}/build/CurrentFlavor/control\"\n";
+			shellScript = "out_path=${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/psigned_${EXECUTABLE_FOLDER_PATH}\nmkdir -p ${out_path}\ncp ${CODESIGNING_FOLDER_PATH}/${TARGET_NAME} ${out_path}/\n#/usr/local/bin/ldid -S ${out_path}/${EXECUTABLE_NAME}\ncodesign -s ssc ${out_path}/${EXECUTABLE_NAME}\n\ngcc -C -E -P -x c -DCURRENT_DEB_VERSION=$CURRENT_PROJECT_VERSION-0 \"${PROJECT_DIR}/control\" -o \"${PROJECT_DIR}/build/CurrentFlavor/control\"\nsed -i '' '/^$/d' \"${PROJECT_DIR}/build/CurrentFlavor/control\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -219,11 +222,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LD_DYLIB_INSTALL_NAME = /Library/MobileSubstrate/DynamicLibraries/tehfix.dylib;
 				MACH_O_TYPE = mh_dylib;
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
@@ -236,12 +239,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Don't Code Sign";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LD_DYLIB_INSTALL_NAME = /Library/MobileSubstrate/DynamicLibraries/tehfix.dylib;
 				MACH_O_TYPE = mh_dylib;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};

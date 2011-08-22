@@ -70,13 +70,21 @@ REF_ENTRY ref_table[] = {
 //	//"activation ticket accepted... drive thru"
 //	{0x1177FA, 0x31AD2, 0x31899},
 
-    //iOS5 Beta5
+//    //iOS5 Beta5
+//    //"+xsimstate=1"
+//	{0x11C16B, 0x34492, 0x34425},
+//	//"Sending internal notification %s (%d) params={%d, %d, %p}"
+//	{0x12423F, 0x67294, 0x671E1}, 
+//	//"activation ticket accepted... drive thru"
+//	{0x11C0E3, 0x338C6, 0x3368D},
+
+    //iOS5 Beta6
     //"+xsimstate=1"
-	{0x11C16B, 0x34492, 0x34425},
+	{0x11FAA2, 0x35756, 0x356E9},
 	//"Sending internal notification %s (%d) params={%d, %d, %p}"
-	{0x12423F, 0x67294, 0x671E1}, 
+	{0x127C56, 0x6864C, 0x68599}, 
 	//"activation ticket accepted... drive thru"
-	{0x11C0E3, 0x338C6, 0x3368D},
+	{0x11FA1A, 0x34B8A, 0x34951},
 
 };
 

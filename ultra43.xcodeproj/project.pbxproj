@@ -25,6 +25,7 @@
 		9D62E4CD12E488B500C7C0E2 /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		9D85CF601410AE9C00ED69E6 /* commcenter.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = commcenter.py; sourceTree = "<group>"; };
 		9D8A202912E489BA000F2BA0 /* control */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = control; sourceTree = "<group>"; };
+		9DDB327B1411778700429069 /* ref_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ref_table.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +66,7 @@
 			children = (
 				9D4970F812E3B0370002C4D2 /* substrate.h */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				9DDB327B1411778700429069 /* ref_table.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";

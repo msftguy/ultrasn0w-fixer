@@ -78,14 +78,21 @@ REF_ENTRY ref_table[] = {
 //	//"activation ticket accepted... drive thru"
 //	{0x11C0E3, 0x338C6, 0x3368D},
 
-    //iOS5 Beta6
-    //"+xsimstate=1"
-	{0x11FAA2, 0x35756, 0x356E9},
-	//"Sending internal notification %s (%d) params={%d, %d, %p}"
-	{0x127C56, 0x6864C, 0x68599}, 
-	//"activation ticket accepted... drive thru"
-	{0x11FA1A, 0x34B8A, 0x34951},
+//    //iOS5 Beta6
+//    //"+xsimstate=1"
+//	{0x11FAA2, 0x35756, 0x356E9},
+//	//"Sending internal notification %s (%d) params={%d, %d, %p}"
+//	{0x127C56, 0x6864C, 0x68599}, 
+//	//"activation ticket accepted... drive thru"
+//	{0x11FA1A, 0x34B8A, 0x34951},
 
+    // iOS TODO: version
+    // +xsimstate=1
+    {0x12049e, 0x358c2, 0x35865},
+    // Sending internal notification %s
+    {0x12866e, 0x68790, 0x68741},
+    // activation ticket accepted... drive thru
+    {0x120416, 0x34c3e, 0x34acd},
 };
 
 static size_t my_FindReference(size_t addr)

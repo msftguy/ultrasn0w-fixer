@@ -11,6 +11,7 @@
 		9D4970FA12E3B0420002C4D2 /* libsubstrate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D4970F912E3B0420002C4D2 /* libsubstrate.dylib */; };
 		9D49711E12E3B4DD0002C4D2 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D49711D12E3B4DD0002C4D2 /* CoreFoundation.framework */; };
 		9D62E4CE12E488B500C7C0E2 /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 9D62E4CD12E488B500C7C0E2 /* build.sh */; };
+		9D85CF611410AE9C00ED69E6 /* commcenter.py in Resources */ = {isa = PBXBuildFile; fileRef = 9D85CF601410AE9C00ED69E6 /* commcenter.py */; };
 		9D8A202A12E489BA000F2BA0 /* control in Resources */ = {isa = PBXBuildFile; fileRef = 9D8A202912E489BA000F2BA0 /* control */; };
 /* End PBXBuildFile section */
 
@@ -22,6 +23,7 @@
 		9D4970F912E3B0420002C4D2 /* libsubstrate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libsubstrate.dylib; sourceTree = SOURCE_ROOT; };
 		9D49711D12E3B4DD0002C4D2 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		9D62E4CD12E488B500C7C0E2 /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
+		9D85CF601410AE9C00ED69E6 /* commcenter.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = commcenter.py; sourceTree = "<group>"; };
 		9D8A202912E489BA000F2BA0 /* control */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = control; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -49,6 +51,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				9D85CF601410AE9C00ED69E6 /* commcenter.py */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -141,6 +144,7 @@
 			files = (
 				9D62E4CE12E488B500C7C0E2 /* build.sh in Resources */,
 				9D8A202A12E489BA000F2BA0 /* control in Resources */,
+				9D85CF611410AE9C00ED69E6 /* commcenter.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

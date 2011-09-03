@@ -36,7 +36,7 @@ static size_t my_FindReference(size_t addr)
 	}
 	if (refOff == 0) {
 		fprintf(stderr, LOGPREFIX "my_FindReference failed for 0x%lx\n", symOff);
-		return NULL;
+		return 0;
 	}
 	fprintf(stderr, LOGPREFIX "my_FindReference OK for 0x%lx: 0x%x + 0x%lx\n", symOff, slide, refOff);
 	return slide + refOff;
@@ -65,7 +65,7 @@ static size_t my_FindLastThumbFunction(size_t start, int maxlen)
     return result;
 }
 
-void hook_ultrasn0w()
+static void hook_ultrasn0w(void)
 {
 	static bool hooked = false;
 	if (hooked)
@@ -89,13 +89,13 @@ void hook_ultrasn0w()
 		fprintf(stderr, LOGPREFIX "dlsym('FindLastThumbFunction') FAILED\n");
 		return;
 	}
-	MSHookFunction(pfnFindLastThumbFunction, my_FindLastThumbFunction, &s_orig_FindLastThumbFunction);
+	MSHookFunction(pfnFindLastThumbFunction, my_FindLastThumbFunction, (void**)&s_orig_FindLastThumbFunction);
 	fprintf(stderr, LOGPREFIX "hooked FindLastThumbFunction\n");
     
 	hooked = true;	
 }
 
-FILE * my_fopen ( const char * filename, const char * mode )
+static FILE * my_fopen ( const char * filename, const char * mode )
 {
 	if ((filename != NULL) && 
         (0 == strcmp(filename, "/var/wireless/Library/Logs/ultrasn0w-dylib.log"))) 
@@ -105,9 +105,9 @@ FILE * my_fopen ( const char * filename, const char * mode )
 	return s_orig_fopen(filename, mode);
 }
 
-void entry()  __attribute__ ((constructor));
+static void entry(void)  __attribute__ ((constructor));
 
-void entry() {
+static void entry(void) {
 	fprintf(stderr, LOGPREFIX "loaded\n");
-	MSHookFunction(fopen, my_fopen, &s_orig_fopen);
+	MSHookFunction(fopen, my_fopen, (void*)&s_orig_fopen);
 }

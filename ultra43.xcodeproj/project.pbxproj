@@ -12,6 +12,7 @@
 		9D49711E12E3B4DD0002C4D2 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D49711D12E3B4DD0002C4D2 /* CoreFoundation.framework */; };
 		9D62E4CE12E488B500C7C0E2 /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 9D62E4CD12E488B500C7C0E2 /* build.sh */; };
 		9D8A202A12E489BA000F2BA0 /* control in Resources */ = {isa = PBXBuildFile; fileRef = 9D8A202912E489BA000F2BA0 /* control */; };
+		9DE16CD41412DE6F0067EF7B /* install.sh in Resources */ = {isa = PBXBuildFile; fileRef = 9DE16CD31412DE6F0067EF7B /* install.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		9D62E4CD12E488B500C7C0E2 /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		9D8A202912E489BA000F2BA0 /* control */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = control; sourceTree = "<group>"; };
 		9DDB327B1411778700429069 /* ref_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ref_table.h; sourceTree = "<group>"; };
+		9DE16CD31412DE6F0067EF7B /* install.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = install.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 				9D8A202912E489BA000F2BA0 /* control */,
 				9D62E4CD12E488B500C7C0E2 /* build.sh */,
 				8D1107310486CEB800E47090 /* ultra43-Info.plist */,
+				9DE16CD31412DE6F0067EF7B /* install.sh */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			files = (
 				9D62E4CE12E488B500C7C0E2 /* build.sh in Resources */,
 				9D8A202A12E489BA000F2BA0 /* control in Resources */,
+				9DE16CD41412DE6F0067EF7B /* install.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -134,7 +134,7 @@ isInstalled mobilesubstrate || {
     then apt-get install mobilesubstrate;
     else neuter_and_install "http://apt.saurik.com/debs/mobilesubstrate_0.9.3367+6.g629fcfa_iphoneos-arm.deb";
     fi
-    isInstalled mobilesubstrate || {
+    isInstalledOK mobilesubstrate || {
         bail Could not install mobilesubstrate!
     }
     plutil -EnvironmentVariables -dict $plist >/dev/null || bail "Plutil failure #1"

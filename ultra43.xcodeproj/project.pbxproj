@@ -169,6 +169,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "out_path=${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/psigned_${EXECUTABLE_FOLDER_PATH}\nmkdir -p ${out_path}\ncp ${CODESIGNING_FOLDER_PATH}/${TARGET_NAME} ${out_path}/\n#/usr/local/bin/ldid -S ${out_path}/${EXECUTABLE_NAME}\ncodesign -s ssc ${out_path}/${EXECUTABLE_NAME}\n\ngcc -C -E -P -x c -DCURRENT_DEB_VERSION=$CURRENT_PROJECT_VERSION-0 \"${PROJECT_DIR}/control\" -o \"${PROJECT_DIR}/build/CurrentFlavor/control\"\nsed -i '' '/^$/d' \"${PROJECT_DIR}/build/CurrentFlavor/control\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

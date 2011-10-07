@@ -9,10 +9,14 @@
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
 #include <stdio.h>
+//#include <unistd.h>
+#include <sys/sysctl.h>
 
 static FILE * (*s_orig_fopen) ( const char * filename, const char * mode );
 
 static const char* xgold_libname = "/usr/share/ultrasn0w/ultrasn0w-xgold608.dylib";
+static const char* i4_libname = "/Library/MobileSubstrate/DynamicLibraries/ultrasn0w.dylib";
+static const char* ultrasnow_log = "/var/wireless/Library/Logs/ultrasn0w-dylib.log";
 
 static void* s_orig_findReference;
 static size_t (*s_orig_FindLastThumbFunction)(size_t, int);
@@ -65,18 +69,19 @@ static size_t my_FindLastThumbFunction(size_t start, int maxlen)
     return result;
 }
 
-static void hook_ultrasn0w(void)
+static void hook_ultrasn0w(const char* target_dylib)
 {
 	static bool hooked = false;
 	if (hooked)
 		return;
-	// FIXME: something needs to be changed on iPhone4
-	void* ultrasn0w608_lib = dlopen(xgold_libname, RTLD_LAZY);
-	if (!ultrasn0w608_lib) {
-		fprintf(stderr, LOGPREFIX "dlopen(%s) FAILED\n", xgold_libname);
+
+	fprintf(stderr, LOGPREFIX "Target dylib: %s", target_dylib);
+    void* us_lib = dlopen(target_dylib, RTLD_LAZY);
+	if (!us_lib) {
+		fprintf(stderr, LOGPREFIX "dlopen(%s) FAILED\n", target_dylib);
 		return;
 	}
-	void* pfnFindReference = dlsym(ultrasn0w608_lib, "FindReference");
+	void* pfnFindReference = dlsym(us_lib, "FindReference");
 	if (!pfnFindReference) {
 		fprintf(stderr, LOGPREFIX "dlsym('FindReference') FAILED\n");
 		return;
@@ -84,7 +89,7 @@ static void hook_ultrasn0w(void)
 	MSHookFunction(pfnFindReference, my_FindReference, &s_orig_findReference);
 	fprintf(stderr, LOGPREFIX "hooked FindReference\n");
     
-	void* pfnFindLastThumbFunction = dlsym(ultrasn0w608_lib, "FindLastThumbFunction");
+	void* pfnFindLastThumbFunction = dlsym(us_lib, "FindLastThumbFunction");
 	if (!pfnFindLastThumbFunction) {
 		fprintf(stderr, LOGPREFIX "dlsym('FindLastThumbFunction') FAILED\n");
 		return;
@@ -95,12 +100,27 @@ static void hook_ultrasn0w(void)
 	hooked = true;	
 }
 
+static int is_3gs()
+{
+    char namebuf[0x100];
+    int mib[2] = {CTL_HW, HW_MODEL};
+    unsigned long size = sizeof(namebuf);
+    int result = sysctl(mib, sizeof(mib)/sizeof(*mib), namebuf, &size, nil, 0);
+    if (result != 0) {
+        fprintf(stderr, LOGPREFIX "sysctl({CTL_HW, HW_MODEL}) failed, unknown model\n");        
+        return NO;
+    }
+    namebuf[sizeof(namebuf)-1] = '\0';
+    fprintf(stderr, LOGPREFIX "sysctl({CTL_HW, HW_MODEL}) = '%s'\n", namebuf);        
+    return 0 == strcasecmp(namebuf, "N88AP");
+}
+
 static FILE * my_fopen ( const char * filename, const char * mode )
 {
 	if ((filename != NULL) && 
-        (0 == strcmp(filename, "/var/wireless/Library/Logs/ultrasn0w-dylib.log"))) 
+        (0 == strcmp(filename, ultrasnow_log))) 
     {
-        hook_ultrasn0w();
+        hook_ultrasn0w(is_3gs() ? xgold_libname : i4_libname);
     }
 	return s_orig_fopen(filename, mode);
 }
